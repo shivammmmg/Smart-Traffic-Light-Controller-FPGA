@@ -8,8 +8,6 @@ A **Smart Traffic Light Controller** implemented on the **Intel DE10-Lite FPGA**
 The system manages vehicular and pedestrian traffic using a **Moore Finite State Machine (FSM)**, hardware timers, and mode-based control logic.
 
 ✔ Fully demonstrated on hardware  
-✔ No simulation-only assumptions  
-✔ **Final Grade: 15 / 15**
 
 ---
 
