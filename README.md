@@ -1,50 +1,82 @@
 # 🚦 Smart Traffic Light Controller (FPGA – Verilog)
 
-A **Smart Traffic Light Controller** implemented on the **Intel DE10-Lite FPGA** using **Verilog HDL** and **Intel Quartus Prime Lite**.  
-The system manages vehicular and pedestrian traffic using a **Moore-type Finite State Machine**, real-time hardware timers, and mode-based control logic.
+![FPGA](https://img.shields.io/badge/Platform-DE10--Lite-blue)
+![Verilog](https://img.shields.io/badge/Language-Verilog-orange)
+![FSM](https://img.shields.io/badge/Design-Moore%20FSM-purple)
+![Course](https://img.shields.io/badge/Course-EECS%203201-green)
 
-The project was fully demonstrated on hardware and received **15/15** in EECS 3201 – Digital Logic Design.
+A **Smart Traffic Light Controller** implemented on the **Intel DE10-Lite FPGA** using **Verilog HDL** and **Intel Quartus Prime Lite**.  
+The system manages vehicular and pedestrian traffic using a **Moore Finite State Machine (FSM)**, hardware timers, and mode-based control logic.
+
+✔ Fully demonstrated on hardware  
+✔ No simulation-only assumptions  
+✔ **Final Grade: 15 / 15**
 
 ---
 
-🎯 **Objective**  
-To design and implement a reliable **FPGA-based traffic control system** that integrates **combinational and sequential logic**, safely handles pedestrian requests, and adapts to different traffic conditions — demonstrating real-world digital system design.
+## 🎯 Objective
+To design and implement a **real-time FPGA-based traffic control system** that integrates **combinational and sequential logic**, safely handles pedestrian requests, and adapts traffic timing based on operational modes — demonstrating industry-relevant digital system design.
 
 ---
 
 ## 🧩 Features
-- 🚥 Automatic **Green → Yellow → Red** traffic light sequencing  
-- 🚶 Pedestrian request button with **debouncing and safe buffering**  
-- ⏱️ Hardware-accurate timing using synchronous counters  
-- 🔢 Walk countdown displayed on **7-segment HEX display**  
+- 🚥 Automatic **Green → Yellow → Red** traffic sequencing  
+- 🚶 Pedestrian request button with **debounce + request latching**  
+- ⏱️ Accurate phase timing using synchronous hardware counters  
+- 🔢 Pedestrian walk countdown on **HEX display**  
 - 🌙 **Night Mode** with continuous blinking yellow light  
-- 🔀 Low-traffic / High-traffic modes using hardware switches  
-- 🧱 Modular Verilog design (FSM, timers, debouncer, blink generator)
+- 🔀 **Low / High traffic modes** using board switches  
+- 🧱 Fully modular Verilog design (FSM, timers, debouncer, blink logic)
 
 ---
 
 ## ⚙️ Hardware Components
 | Component | Description |
-|------------|-------------|
+|----------|-------------|
 | **Intel DE10-Lite FPGA** | Main hardware platform |
-| **On-board LEDs** | Vehicle & pedestrian signals |
+| **On-board LEDs (LEDR)** | Traffic & pedestrian indicators |
 | **Push Buttons (KEY)** | Reset and pedestrian request |
-| **Slide Switches (SW)** | Night mode & traffic mode selection |
-| **HEX Display** | Pedestrian walk countdown |
-| **50 MHz On-board Clock** | System clock source |
+| **Slide Switches (SW)** | Mode selection |
+| **HEX Display** | Walk countdown timer |
+| **50 MHz Clock** | System clock source |
+
+---
+
+## 🔌 DE10-Lite Hardware Mapping
+
+<p align="center">
+  <img src="images/de10_hardware_mapping.png" width="900">
+  <br>
+  <em>Figure: Mapping of DE10-Lite inputs/outputs to traffic controller functionality.</em>
+</p>
+
+| Component | Function | Active When |
+|---------|---------|-------------|
+| LEDR[0] | Green Light | Green phase |
+| LEDR[1] | Yellow Light | Yellow phase / Night blink |
+| LEDR[2] | Red Light | Red phase |
+| LEDR[3] | Pedestrian Walk | Walk state |
+| LEDR[4] | Pedestrian Don’t Walk | Vehicle movement |
+| LEDR[5] | Walk Request Indicator | After KEY1 press |
+| SW[0] | Night Mode | Blinking yellow |
+| SW[1] | Low Traffic Mode | Short cycles |
+| SW[2] | High Traffic Mode | Extended cycles |
+| HEX0 | Countdown Display | Walk timer |
+| KEY0 | Reset | Reset controller |
+| KEY1 | Pedestrian Button | Request crossing |
 
 ---
 
 ## 💻 Design & Software Overview
 **Languages & Tools**
-- **Verilog HDL** – Digital design and control logic  
-- **Intel Quartus Prime Lite** – FPGA synthesis & programming  
+- **Verilog HDL** – Digital logic design  
+- **Intel Quartus Prime Lite** – Synthesis, compilation, FPGA programming  
 
 **Key Modules**
 | Module | Description |
-|-------|--------------|
-| `traffic_fsm.v` | Moore FSM controlling traffic phases |
-| `phase_timer.v` | Parameterized hardware timers |
+|------|-------------|
+| `traffic_fsm.v` | Moore FSM controlling system behavior |
+| `phase_timer.v` | Parameterized traffic phase timers |
 | `walk_countdown_timer.v` | Pedestrian countdown logic |
 | `debounce_button.v` | Push-button debouncing |
 | `blink_generator.v` | Night-mode blinking logic |
@@ -54,30 +86,79 @@ To design and implement a reliable **FPGA-based traffic control system** that in
 ---
 
 ## 🧠 System Logic (FSM Overview)
-1. System starts in **Green** state after reset.  
-2. Traffic lights cycle **Green → Yellow → Red** using hardware timers.  
-3. Pedestrian button press is **latched** and serviced safely during the Red phase.  
-4. During **Walk**:
-   - Pedestrian LED turns ON  
-   - Countdown appears on HEX display  
-5. After countdown completes, system returns to **Green**.  
-6. **Night Mode** overrides all states with blinking yellow light.  
-7. Traffic duration adjusts automatically in **Low / High traffic modes**.
+
+<p align="center">
+  <img src="images/fsm_diagram.png" width="700">
+  <br>
+  <em>Figure: Moore FSM controlling traffic flow and pedestrian interaction.</em>
+</p>
+
+1. System starts in **Green** after reset  
+2. Cycles through **Green → Yellow → Red** using hardware timers  
+3. Pedestrian request is **latched** and serviced safely during Red  
+4. **Walk state** enables countdown display and pedestrian signal  
+5. After countdown completes, system returns to Green  
+6. **Night Mode** overrides all states with blinking yellow  
 
 ---
 
-## 🎥 Hardware Demonstration
-YouTube Demo:  
+## ⏱️ Timing Configuration
+
+| Mode | Green | Yellow | Red |
+|-----|-------|--------|-----|
+| Normal | 7 s | 3 s | 5 s |
+| Low Traffic | 5 s | 2 s | 4 s |
+| High Traffic | 10 s | 3 s | 7 s |
+
+(All timings are parameterized and adjustable in `traffic_top.v`)
+
+---
+
+## ▶️ How to Run (Quartus + DE10-Lite)
+1. Install **Intel Quartus Prime Lite**
+2. Open `project.qpf`
+3. Compile the design
+4. Program the DE10-Lite FPGA
+5. Interact using:
+   - **KEY0** → Reset  
+   - **KEY1** → Pedestrian request  
+   - **SW0** → Night Mode  
+   - **SW1 / SW2** → Traffic modes  
+
+---
+
+## 🎥 Live Hardware Demo
+▶️ **YouTube:**  
 https://www.youtube.com/watch?v=zH9PwKlnD2A
+
+> Recorded during final evaluation on DE10-Lite FPGA.
+
+---
+
+## 🧪 Testing & Validation
+- Verified entirely on **hardware** (no simulation-only testing)
+- All features demonstrated live to TA
+- Edge cases tested:
+  - Pedestrian request during active cycle  
+  - Mode switching  
+  - Reset during operation  
 
 ---
 
 ## 🎓 Learning Outcomes
-- ✔ Strong understanding of **Moore FSM design**  
-- ✔ Practical experience with **FPGA timing & synchronization**  
-- ✔ Modular Verilog system architecture  
-- ✔ Hardware debugging and live demonstration  
-- ✔ Real-world digital logic application
+- Strong understanding of **Moore FSM design**
+- Practical FPGA timing and synchronization
+- Modular Verilog system architecture
+- Hardware debugging and live demo experience
+- Real-world embedded system design exposure
+
+---
+
+## 🚀 Possible Enhancements
+- Emergency vehicle priority
+- Multi-intersection synchronization
+- Sensor-based adaptive timing
+- Audible pedestrian alerts
 
 ---
 
@@ -89,6 +170,6 @@ https://www.youtube.com/watch?v=zH9PwKlnD2A
 ---
 
 ## 📚 References
-- EECS 3201 – Digital Logic Design, York University  
-- Intel DE10-Lite User Manual  
-- Intel Quartus Prime Lite Documentation  
+- EECS 3201 – Digital Logic Design (York University)
+- Intel DE10-Lite User Manual
+- Intel Quartus Prime Lite Documentation
