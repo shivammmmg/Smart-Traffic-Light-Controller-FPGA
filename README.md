@@ -3,7 +3,6 @@
 ![FPGA](https://img.shields.io/badge/Platform-DE10--Lite-blue)
 ![Verilog](https://img.shields.io/badge/Language-Verilog-orange)
 ![FSM](https://img.shields.io/badge/Design-Moore%20FSM-purple)
-![Course](https://img.shields.io/badge/Course-EECS%203201-green)
 
 A **Smart Traffic Light Controller** implemented on the **Intel DE10-Lite FPGA** using **Verilog HDL** and **Intel Quartus Prime Lite**.  
 The system manages vehicular and pedestrian traffic using a **Moore Finite State Machine (FSM)**, hardware timers, and mode-based control logic.
