@@ -114,6 +114,7 @@ To design and implement a **real-time FPGA-based traffic control system** that i
 https://www.youtube.com/watch?v=zH9PwKlnD2A
 
 > Recorded during final evaluation on DE10-Lite FPGA.
+> 📦 A ZIP archive containing the original project is included for reference.
 
 ---
 
