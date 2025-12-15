@@ -47,21 +47,6 @@ To design and implement a **real-time FPGA-based traffic control system** that i
   <em>Figure: Mapping of DE10-Lite inputs/outputs to traffic controller functionality.</em>
 </p>
 
-| Component | Function | Active When |
-|---------|---------|-------------|
-| LEDR[0] | Green Light | Green phase |
-| LEDR[1] | Yellow Light | Yellow phase / Night blink |
-| LEDR[2] | Red Light | Red phase |
-| LEDR[3] | Pedestrian Walk | Walk state |
-| LEDR[4] | Pedestrian Don’t Walk | Vehicle movement |
-| LEDR[5] | Walk Request Indicator | After KEY1 press |
-| SW[0] | Night Mode | Blinking yellow |
-| SW[1] | Low Traffic Mode | Short cycles |
-| SW[2] | High Traffic Mode | Extended cycles |
-| HEX0 | Countdown Display | Walk timer |
-| KEY0 | Reset | Reset controller |
-| KEY1 | Pedestrian Button | Request crossing |
-
 ---
 
 ## 💻 Design & Software Overview
