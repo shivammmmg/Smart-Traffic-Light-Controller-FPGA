@@ -140,22 +140,6 @@ https://www.youtube.com/watch?v=zH9PwKlnD2A
   - Mode switching  
   - Reset during operation  
 
----
-
-## 🎓 Learning Outcomes
-- Strong understanding of **Moore FSM design**
-- Practical FPGA timing and synchronization
-- Modular Verilog system architecture
-- Hardware debugging and live demo experience
-- Real-world embedded system design exposure
-
----
-
-## 🚀 Possible Enhancements
-- Emergency vehicle priority
-- Multi-intersection synchronization
-- Sensor-based adaptive timing
-- Audible pedestrian alerts
 
 ---
 
